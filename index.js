@@ -16,6 +16,8 @@ const defaultSettings = {};
 eventSource.on(event_types.MESSAGE_RECEIVED, handleIncomingMessage);
 
 function handleIncomingMessage(data) {
+  if (!extension_settings[extensionName].example_setting)
+  return;
   let chatData = chat[data];
   let message = chatData["mes"];
 
@@ -72,7 +74,6 @@ jQuery(async () => {
   $("#extensions_settings").append(settingsHtml);
 
   // These are examples of listening for events
-  $("#my_button").on("click", onButtonClick);
   $("#example_setting").on("input", onExampleInput);
 
   // Load settings when starting things up (if you have any)
