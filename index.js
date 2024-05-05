@@ -5,7 +5,7 @@
 import { extension_settings, getContext, loadExtensionSettings } from "../../../extensions.js";
 
 //You'll likely need to import some other functions from the main script
-import { saveSettingsDebounced } from "../../../../script.js";
+import { saveSettingsDebounced, eventSource, event_types, chat} from "../../../../script.js";
 
 // Keep track of where your extension is located, name should match repo name
 const extensionName = "st-extension-example";
@@ -13,6 +13,23 @@ const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
 const extensionSettings = extension_settings[extensionName];
 const defaultSettings = {};
 
+eventSource.on(event_types.MESSAGE_RECEIVED, handleIncomingMessage);
+
+function handleIncomingMessage(data) {
+  let chatData = chat[data];
+  let message = chatData["mes"];
+
+  // 使用 AJAX 发送 POST 请求到后端
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "http://localhost:10829", true);
+  xhr.setRequestHeader("Content-Type", "text/plain"); // 设置请求头为纯文本
+  xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+          console.log("Message sent successfully!");
+      }
+  };
+  xhr.send(message); // 直接发送纯文本数据
+}
 
  
 // Loads the extension settings if they exist, otherwise initializes them to the defaults.
